@@ -1,0 +1,9 @@
+{
+    "markdown.copyFiles.destination": {
+        "/redis/*.md": "./images/${documentBaseName}/",
+        "/mysql/*.md": "./images/${documentBaseName}/",
+        "网络安全/web安全/sql注入/*.md": "./images/${documentBaseName}/",
+        "网络安全/安全认证/OSCP/*/*.md": "./images/${documentBaseName}/"
+        
+    }
+} 
