@@ -1,8 +1,8 @@
 # 应用场景
 
-PC1 和 PC2 通过 190.X.X.X 网段互通，PC1 想要访问位于内网的 PC3/PC4/PC5，可以在 PC2 部署OpenVPN 服务端，在 PC1 部署 OpenVPN 客户端，实现内网访问。
+PC1 和 PC2 通过 190.X.X.X 建立 VPN 隧道，PC 想要访问位于内网的 server，可以在 server gateway 部署OpenVPN 服务端，在 PC 部署 OpenVPN 客户端，实现内网访问。
 
-![](<images/01 配置OpenVPN访问内网/image-2.png>)
+![](<images/01 配置OpenVPN访问内网/image-5.png>)
 
 # OpenVPN下载与安装
 OpenVPN官网下载 [OpenVPN GUI Community Downloads](https://openvpn.net/community-downloads/)
@@ -281,6 +281,17 @@ verb 3
 
 
 ```
+
+## 配置路由转发
+
+Windows 修改注册表项，允许网卡直接 IP 路由转发，**服务端和客户端都要修改**
+> HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters 的 IPEnableRouter 改为 1
+
+![](<images/01 配置OpenVPN访问内网/image-3.png>)
+
+配置完成之后重启，可以在 cmd 看到已经启用 IP 路由功能
+
+![alt text](<images/01 配置OpenVPN访问内网/image-4.png>)
 
 # 参考
 
