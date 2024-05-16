@@ -38,11 +38,7 @@ root@ubuntu:~# blkid
 
 ```
 
-关于 fstab 的描述，linux 执行 man fstab 查看
-
-
-
-
+关于 fstab 的描述，linux 执行 `man fstab` 查看
 
 
 # 挂载网络磁盘
