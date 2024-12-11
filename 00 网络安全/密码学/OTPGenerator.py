@@ -4,8 +4,9 @@ import base64
 import hashlib
 
 
-def __generate_otp(key, counter_bytes, algorithm, digits):
+def __generate_otp(key, counter, algorithm, digits):
     # Compute the HMAC value
+    counter_bytes = counter.to_bytes(8, byteorder='big')
     hmac_hash = hmac.new(key, counter_bytes, algorithm).digest()
     # Extract the dynamic offset from the last byte of the HMAC
     offset = hmac_hash[-1] & 0x0F
@@ -18,18 +19,16 @@ def __generate_otp(key, counter_bytes, algorithm, digits):
 
 def generate_hotp(secret, counter, digits=6, algorithm=hashlib.sha1):
     key = base64.b32decode(secret, casefold=True)
-    counter_bytes = counter.to_bytes(8, byteorder='big')
-    return __generate_otp(key, counter_bytes, algorithm, digits)
+    return __generate_otp(key, counter, algorithm, digits)
 
 
 def generate_totp(secret, time_step=30, digits=6, algorithm=hashlib.sha1):
     key = base64.b32decode(secret, casefold=True)
     counter = int(time.time() // time_step)
-    counter_bytes = counter.to_bytes(8, byteorder='big')
-    return __generate_otp(key, counter_bytes, algorithm, digits)
+    return __generate_otp(key, counter, algorithm, digits)
 
 
-def verify_totp(secret, otp, time_step=30, window=1, digits=6):
+def verify_totp(secret, otp, time_step=30, window=1, digits=6, algorithm=hashlib.sha1):
     """
     Verify a TOTP.
 
@@ -43,15 +42,16 @@ def verify_totp(secret, otp, time_step=30, window=1, digits=6):
     Returns:
         bool: True if OTP is valid, False otherwise.
     """
+    key = base64.b32decode(secret, casefold=True)
     current_time = int(time.time())
     for i in range(-window, window + 1):
-        time_counter = (current_time // time_step) + i
-        generated_otp = generate_totp(secret, time_step, digits)
+        time_counter = int(current_time // time_step) + i
+        generated_otp = __generate_otp(key, time_counter, algorithm, digits)
         if generated_otp == otp:
             return True
     return False
 
-def verify_hotp(secret, otp, counter, window=5, digits=6):
+def verify_hotp(secret, otp, counter, window=5, digits=6, algorithm=hashlib.sha1):
     """
     Verify an HOTP.
 
@@ -65,6 +65,7 @@ def verify_hotp(secret, otp, counter, window=5, digits=6):
     Returns:
         bool: True if OTP is valid, False otherwise.
     """
+
     for i in range(window):
         # Generate OTP for current counter + offset
         generated_otp = generate_hotp(secret, counter + i, digits)
@@ -78,5 +79,6 @@ def verify_hotp(secret, otp, counter, window=5, digits=6):
 if __name__ == "__main__":
     # Secret in Base32-encoded
     secret_key = "LZEKNECB4XSNKUD4"
-    print("Your HOTP CODE:", generate_hotp(secret_key, 0))
-    print("Your TOTP CODE:", generate_totp(secret_key))
+    print("Your HOTP: ", generate_hotp(secret_key, 0))
+    print("Your TOTP: ", generate_totp(secret_key))
+    print("Verify TOTP ", verify_totp(secret_key, generate_totp(secret_key)))
