@@ -80,11 +80,7 @@ TOTP 算法作为 HOTP 算法的拓展算法
 ![alt text](<images/2FA 与 OTP/image-4.png>)
 
 图片来源：https://notes.mengxin.science/2017/05/30/hotp-totp-algorithm-analysis/
-   
 
-![alt text](<images/2FA 与 OTP/image-5.png>)
-
-图片来源：https://notes.mengxin.science/2017/05/30/hotp-totp-algorithm-analysis/
 
 
 # OTP 校验
@@ -136,6 +132,10 @@ counter = current_time // time_step
 
 
 # OTP 安全问题
+
+![alt text](<images/2FA 与 OTP/image-5.png>)
+
+图片来源：https://notes.mengxin.science/2017/05/30/hotp-totp-algorithm-analysis/
 
 
 
