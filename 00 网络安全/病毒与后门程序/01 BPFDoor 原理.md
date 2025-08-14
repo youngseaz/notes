@@ -7,7 +7,10 @@
 ## BPF
 
 ### BPF 简介
-Berkeley Packet Filter (BPF) 最早版本的 BPF 是 1990 年代由 Berkeley 大学开发，用于高效地从网络接口中抓包，主要用于工具如 tcpdump.
+Berkeley Packet Filter (BPF) 最早版本的 BPF 是 1990 年代由 Berkeley 大学开发，用于高效地从网络接口中抓包，主要用于工具如 tcpdump. 上世纪 90 年代初，tcpdump 这样的抓包工具已经很流行，但遇到了一个大问题：
+性能差：当网卡收到大量数据包时，内核会把所有包都交给用户态的抓包程序去过滤。如果程序只想分析 TCP/80 包，那内核依然会把所有包传过去，剩下的在用户态做判断。这导致大量无用的数据拷贝和用户态 CPU 浪费。
+结果就是，在高流量场景下，抓包工具根本跟不上网卡速率，会丢包严重。 BPF主要在内核态过滤数据包，把减少非必要的数据从内核态拷贝到用户态，减少开销
+
 
 extended BPF (eBPF) 是 BPF 的现代增强版，功能大幅扩展，早已超越原始的网络包过滤用途。eBPF 兼容 BPF.
 
@@ -80,8 +83,13 @@ DF = 1	不允许分片，若不能传就丢弃并回 ICMP
 DF = 0	可以分片
 ```
 要触发真正的“IP 分片”，两个条件都要满足：IP包长度 > MTU 且 DF=0
-🧪 三、分片字段（IP头）
-分片时，IP 包头的这几个字段特别关键：
+🧪 三、重组过程（目的端 IP 层完成）：
+
+收到分片后按 (srcIP, dstIP, protocol, identification) 分类
+根据 Fragment Offset 把分片放回原始数据的位置
+根据 MF=0 的最后一个分片确定总长度
+检查所有字节都收到后，合并成原始 IP 包，交给上层协议（TCP/UDP/ICMP）
+
 
 字段名|含义
 -|-
@@ -98,6 +106,9 @@ DF（Don't Fragment）|	设置为 1 时不允许分片
 - 绕过防火墙（IP分片重组后的 payload 被分散）
 - 构造 overlapping fragments → 触发协议实现漏洞（Teardrop 攻击）
 - BPFDoor 类木马使用分片包绕过过滤器
+
+
+
 
 # BPFDoor 详细解析
 
