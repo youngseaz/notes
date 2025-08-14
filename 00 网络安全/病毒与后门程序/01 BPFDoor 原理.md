@@ -26,7 +26,12 @@ extended BPF (eBPF) 是 BPF 的现代增强版，功能大幅扩展，早已超�
 
 ### BPF 原理
 
+[BPF document](https://docs.kernel.org/bpf/)
+cBPF（Classic BPF）架构非常简洁，只有 2 个 32 位寄存器：
 
+寄存器	名称	作用
+A	Accumulator（累加器）	所有算术运算、比较、加载/存储操作主要在这个寄存器上进行
+X	Index Register（索引寄存器）	作为辅助寄存器，用于索引访问、部分算术运算、条件跳转等
 
 ### BPF 应用
 
@@ -78,6 +83,9 @@ DF（Don't Fragment）|	设置为 1 时不允许分片
 - BPFDoor 类木马使用分片包绕过过滤器
 
 # BPFDoor 详细解析
+
+- [BPF Instruction Set Architecture](https://www.kernel.org/doc/html/latest/bpf/standardization/instruction-set.html)
+- [bpfdoor source code - github](https://github.com/gwillgues/BPFDoor/blob/main/bpfdoor.c)
 
 ```c
 struct sock_filter bpf_code[] = {
