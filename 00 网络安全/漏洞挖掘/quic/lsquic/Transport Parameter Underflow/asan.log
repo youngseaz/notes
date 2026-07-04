@@ -1,0 +1,62 @@
+star command:
+nohup env ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 \
+  ./build_32_asan/bin/http_server \
+  -s 127.0.0.1:12345 \
+  -r /home/youngseaz/lsquic \
+  -c localhost,/tmp/lsquic32asan_cert.pem,/tmp/lsquic32asan_key.pem \
+  -L info \
+  > /tmp/lsquic32asan_http_server.log 2>&1 &
+
+-------------------------------------------------
+
+
+nohup: ignoring input
+01:21:18.359867 [INFO] tokgen: inserted TOKGEN2 of size 110
+01:21:18.360064 [INFO] prq: initialized queue of size 10000
+01:21:18.360075 [INFO] purga: create purgatory, min life 30000000 usec
+01:21:18.360121 [INFO] engine: instantiated engine
+01:21:18.360245 [INFO] socket buffer size: 212992 bytes; max # packets is set to 155
+01:21:26.127413 [INFO] [QUIC:08978B8CD9171E35] handshake: setup_handshake_keys for DCID E32398FC98D3FF9A
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==84568==ERROR: AddressSanitizer: SEGV on unknown address 0x74c027b4 (pc 0x5688aa7b bp 0xfff6a348 sp 0xfff6a2b0 T0)
+==84568==The signal is caused by a READ memory access.
+    #0 0x5688aa7b in lsquic_varint_read /home/youngseaz/lsquic/src/liblsquic/lsquic_varint.c:25
+    #1 0x56880a7d in lsquic_tp_decode /home/youngseaz/lsquic/src/liblsquic/lsquic_trans_params.c:529
+    #2 0x56696062 in get_peer_transport_params /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:1764
+    #3 0x56698a0f in maybe_get_peer_transport_params /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:1937
+    #4 0x56699d49 in iquic_esfi_get_peer_transport_params /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:2053
+    #5 0x567b4274 in imico_maybe_process_params /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:229
+    #6 0x567b491c in imico_stream_write /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:292
+    #7 0x566a3fb5 in cry_sm_write_message /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:3137
+    #8 0x56970f21 in bssl::tls_flush_pending_hs_data(ssl_st*) /home/youngseaz/boringssl/ssl/s3_both.cc:156
+    #9 0x5694e677 in tls_set_write_state /home/youngseaz/boringssl/ssl/tls_method.cc:78
+    #10 0x5694e24d in bssl::tls13_set_traffic_key(ssl_st*, ssl_encryption_level_t, evp_aead_direction_t, ssl_session_st const*, bssl::Span<unsigned char const>) /home/youngseaz/boringssl/ssl/tls13_enc.cc:224
+    #11 0x56979af9 in do_send_server_hello /home/youngseaz/boringssl/ssl/tls13_server.cc:976
+    #12 0x56979af9 in bssl::tls13_server_handshake(bssl::SSL_HANDSHAKE*) /home/youngseaz/boringssl/ssl/tls13_server.cc:1429
+    #13 0x5696d6f7 in do_tls13 /home/youngseaz/boringssl/ssl/handshake_server.cc:705
+    #14 0x5696d6f7 in bssl::ssl_server_handshake(bssl::SSL_HANDSHAKE*) /home/youngseaz/boringssl/ssl/handshake_server.cc:1776
+    #15 0x56966a8f in bssl::ssl_run_handshake(bssl::SSL_HANDSHAKE*, bool*) /home/youngseaz/boringssl/ssl/handshake.cc:655
+    #16 0x56932f91 in SSL_do_handshake /home/youngseaz/boringssl/ssl/ssl_lib.cc:734
+    #17 0x56698b6e in iquic_esfi_handshake /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:1960
+    #18 0x566a4c4e in iquic_esfi_shake_stream /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:3280
+    #19 0x566a5d23 in chsk_ietf_on_read /home/youngseaz/lsquic/src/liblsquic/lsquic_enc_sess_ietf.c:3370
+    #20 0x567bb3ab in imico_dispatch_stream_events /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:1053
+    #21 0x567bc7f8 in imico_process_crypto_frame /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:1168
+    #22 0x567beccb in imico_process_packet_frame /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:1421
+    #23 0x567befd8 in imico_parse_regular_packet /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:1462
+    #24 0x567c1c24 in ietf_mini_conn_ci_packet_in /home/youngseaz/lsquic/src/liblsquic/lsquic_mini_conn_ietf.c:1809
+    #25 0x566b4e59 in process_packet_in /home/youngseaz/lsquic/src/liblsquic/lsquic_engine.c:1769
+    #26 0x566c3ab2 in lsquic_engine_packet_in /home/youngseaz/lsquic/src/liblsquic/lsquic_engine.c:3286
+    #27 0x5667a1de in read_handler /home/youngseaz/lsquic/bin/test_common.c:824
+    #28 0x56a941c3 in event_process_active_single_queue (/home/youngseaz/lsquic/build_32_asan/bin/http_server+0x4641c3) (BuildId: b69912d6fef2b7379f1f4cfa21332bdfb1b6085d)
+    #29 0x56a94d40 in event_base_loop (/home/youngseaz/lsquic/build_32_asan/bin/http_server+0x464d40) (BuildId: b69912d6fef2b7379f1f4cfa21332bdfb1b6085d)
+    #30 0x56672f8d in prog_run /home/youngseaz/lsquic/bin/prog.c:610
+    #31 0x5666f796 in main /home/youngseaz/lsquic/bin/http_server.c:2075
+    #32 0xf7311cb8  (/lib/i386-linux-gnu/libc.so.6+0x24cb8) (BuildId: 0f6a23454651f08cb9b65ff6544d658177b59947)
+    #33 0xf7311d7b in __libc_start_main (/lib/i386-linux-gnu/libc.so.6+0x24d7b) (BuildId: 0f6a23454651f08cb9b65ff6544d658177b59947)
+    #34 0x56662d66 in _start (/home/youngseaz/lsquic/build_32_asan/bin/http_server+0x32d66) (BuildId: b69912d6fef2b7379f1f4cfa21332bdfb1b6085d)
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV /home/youngseaz/lsquic/src/liblsquic/lsquic_varint.c:25 in lsquic_varint_read
+==84568==ABORTING
