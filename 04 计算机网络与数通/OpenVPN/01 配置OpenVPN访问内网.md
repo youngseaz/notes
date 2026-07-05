@@ -1,31 +1,35 @@
-# 应用场景
+# 01 配置OpenVPN访问内网
+
+## 应用场景
 
 PC1 和 PC2 通过 190.X.X.X 建立 VPN 隧道，PC 想要访问位于内网的 server，可以在 server gateway 部署OpenVPN 服务端，在 PC 部署 OpenVPN 客户端，实现内网访问。
 
-![](<images/01 配置OpenVPN访问内网/image-5.png>)
+![](<../../.gitbook/assets/image-5 (1).png>)
 
-# OpenVPN下载与安装
+## OpenVPN下载与安装
+
 OpenVPN官网下载 [OpenVPN GUI Community Downloads](https://openvpn.net/community-downloads/)
 
 OpenVPN安装，安装的时候**选择自定义安装，勾选上 EasyRSA 工具**，用于生成证书。OpenVPN使用PKI (Public Key Infrastructure) 让服务端与客户端相互验证。需要生成一系列文件置于服务端或客户端，我们需要用 Easy-RSA 生成这些文件。
 
-![](<images/01 配置OpenVPN访问内网/image.png>)
+![](<../../.gitbook/assets/image (3).png>)
 
-# 配置
+## 配置
 
-## 证书生成
+### 证书生成
 
 Windows 10 下使用 Easy-RSA 生成证书，在 OpenVPN 安装目录下 easy-rsa 目录**以管理员身份启动 EasyRSA-Start.bat** 进入 shell.
 
-![](<images/01 配置OpenVPN访问内网/image-1.png>)
+![](<../../.gitbook/assets/image-1 (2).png>)
 
 执行如下步骤的命令生成证书
 
 1. 创建 PKI 和 CA 证书
-- 创建PKI `easyrsa init-pki`
-- 创建无密码的 CA `easyrsa build-ca nopass`
 
-创建 CA 遇到如下提示直接按回车 Common Name (eg: your user, host, or server name) [Easy-RSA CA]: 回车
+* 创建PKI `easyrsa init-pki`
+* 创建无密码的 CA `easyrsa build-ca nopass`
+
+创建 CA 遇到如下提示直接按回车 Common Name (eg: your user, host, or server name) \[Easy-RSA CA]: 回车
 
 ```
 EasyRSA Shell
@@ -69,10 +73,9 @@ CA creation complete. Your new CA certificate is at:
 
 2. 创建服务端证书
 
-- 创建服务端证书请求，名为 vpnserver.req `easyrsa gen-req vpnserver nopass`
-- 签发服务端证书，`easyrsa sign server vpnserver`
-- 生成 DH 文件，`easyrsa gen-dh`
-
+* 创建服务端证书请求，名为 vpnserver.req `easyrsa gen-req vpnserver nopass`
+* 签发服务端证书，`easyrsa sign server vpnserver`
+* 生成 DH 文件，`easyrsa gen-dh`
 
 ```
 EasyRSA Shell
@@ -156,8 +159,8 @@ DH parameters of size 2048 created at:
 
 3. 创建客户端证书
 
-- 创建客户证书请求，名为 vpnclient.req，`easyrsa gen-req vpnclient nopass`
-- 签发客户端证书，`easyrsa sign client vpnclient`
+* 创建客户证书请求，名为 vpnclient.req，`easyrsa gen-req vpnclient nopass`
+* 签发客户端证书，`easyrsa sign client vpnclient`
 
 ```
 EasyRSA Shell
@@ -223,13 +226,11 @@ Certificate created at:
 
 ```
 
-
-## 服务端配置
+### 服务端配置
 
 将证书生成步骤中的vpnserver.crt、vpnserver.key，ca.crt，dh.pem 放到和配置文件server.ovpn 放到同一个目录，且 server.ovpn 的配置如下
 
->模板文件位于 OpenVPN 安装目录下的 sample-config 文件夹，修改后的配置如下，已经把注释删除
-
+> 模板文件位于 OpenVPN 安装目录下的 sample-config 文件夹，修改后的配置如下，已经把注释删除
 
 ```
 # server.ovpn
@@ -257,7 +258,7 @@ explicit-exit-notify 1
 
 ```
 
-## 客户端配置
+### 客户端配置
 
 将证书生成步骤中的vpnclient.crt、vpnclient.key，ca.crt 放到和配置文件 client.ovpn 放到同一个目录，且 client.ovpn 的配置如下
 
@@ -282,18 +283,19 @@ verb 3
 
 ```
 
-## 配置路由转发
+### 配置路由转发
 
 Windows 修改注册表项，允许网卡直接 IP 路由转发，**服务端和客户端都要修改**
-> HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters 的 IPEnableRouter 改为 1
 
-![](<images/01 配置OpenVPN访问内网/image-3.png>)
+> HKEY\_LOCAL\_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters 的 IPEnableRouter 改为 1
+
+![](<../../.gitbook/assets/image-3 (1).png>)
 
 配置完成之后重启，可以在 cmd 看到已经启用 IP 路由功能
 
-![alt text](<images/01 配置OpenVPN访问内网/image-4.png>)
+![alt text](../../.gitbook/assets/image-4.png)
 
-# 参考
+## 参考
 
 1. [基于EASY-RSA-3.0搭建VPN服务之OPENVPN](https://www.xionghaier.cn/archives/367.html)
 2. [OpenVPN Server端配置文件详细说明](https://blog.51cto.com/u_14892047/5201768)
