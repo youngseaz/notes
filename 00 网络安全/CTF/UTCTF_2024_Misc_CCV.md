@@ -1,5 +1,6 @@
+# UTCTF\_2024\_Misc\_CCV
 
-# 题目描述
+## 题目描述
 
 CCV
 
@@ -34,33 +35,31 @@ Are you just guessing?
 
 ```
 
+## 信用卡知识
 
-# 信用卡知识
-
-## 安全码（CSC）
+### 安全码（CSC）
 
 参考：[维基百科-银行卡安全码](https://zh.m.wikipedia.org/wiki/%E9%93%B6%E8%A1%8C%E5%8D%A1%E5%AE%89%E5%85%A8%E7%A0%81)
 
 不同的发卡组织的信用卡安全码的名称和印刷位置不同：
 
-- “CSC”（Card Security Code，银行卡安全代码）：美国运通卡（American Express），为3位数字，印于借记卡背面。
-- “CID”（Card ID，银行卡识别码）：发现卡（Discover）、美国运通卡（American Express），为4位数字，印于银行卡正面。美国运通卡通常使用银行卡正面的4位数字，称为银行卡识别码（CID），但在银行卡背面也有一个3位数的代码，称为银行卡安全码（CSC）。
-- “CVC”(Card Validation Code，银行卡验证码)：万事达卡（Mastercard），为3位数字，平印于银行卡背面。
-- “CVV”(Card Verification Value，银行卡验证值)：Visa卡（Visa），为3位数字，平印于银行卡背面。
-- “CAV”(Card Authentication Value，银行卡验证值)：JCB卡（JCB），为3位数字，平印于银行卡背面。
-- “CVD”(Card Verification Data，银行卡验证数据)：发现卡（Discover），为3位数字，平印于银行卡背面。
-- “CVN”(Card Validation Number，银行卡验证数字)：中国银联卡（China UnionPay），为3位数字，平印于银行卡背面。
+* “CSC”（Card Security Code，银行卡安全代码）：美国运通卡（American Express），为3位数字，印于借记卡背面。
+* “CID”（Card ID，银行卡识别码）：发现卡（Discover）、美国运通卡（American Express），为4位数字，印于银行卡正面。美国运通卡通常使用银行卡正面的4位数字，称为银行卡识别码（CID），但在银行卡背面也有一个3位数的代码，称为银行卡安全码（CSC）。
+* “CVC”(Card Validation Code，银行卡验证码)：万事达卡（Mastercard），为3位数字，平印于银行卡背面。
+* “CVV”(Card Verification Value，银行卡验证值)：Visa卡（Visa），为3位数字，平印于银行卡背面。
+* “CAV”(Card Authentication Value，银行卡验证值)：JCB卡（JCB），为3位数字，平印于银行卡背面。
+* “CVD”(Card Verification Data，银行卡验证数据)：发现卡（Discover），为3位数字，平印于银行卡背面。
+* “CVN”(Card Validation Number，银行卡验证数字)：中国银联卡（China UnionPay），为3位数字，平印于银行卡背面。
 
-## 发卡行识别码（PAN)
+### 发卡行识别码（PAN)
 
 参考：[维基百科-发卡行识别码](https://zh.wikipedia.org/wiki/%E5%8F%91%E5%8D%A1%E8%A1%8C%E8%AF%86%E5%88%AB%E7%A0%81)
 
-PAN (Payment Card Number，发卡行识别码), 
+PAN (Payment Card Number，发卡行识别码),
 
-![Credit Card](images/UTCTF_2024_misc_CCV/image.png)
+![Credit Card](<../../.gitbook/assets/image (6).png>)
 
+## 参考
 
-# 参考
-
-1. 
-2. 
+1.
+2.

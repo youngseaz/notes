@@ -1,5 +1,6 @@
+# Linux后门分析
 
-# 恶意文件信息
+## 恶意文件信息
 
 后门样本在环境中的名称为：cupsd, audittd, 带 upx 压缩壳
 
@@ -29,9 +30,9 @@ BLAKE2sp: d72eb1007325e912b2c580f245f3b6df746a781b777b721d862dc1a776b6dfee
 
 ```
 
-# 恶意样本分析
+## 恶意样本分析
 
-## 基本分析
+### 基本分析
 
 使用 file 命令查看文件，为 64 位 ELF 静态编译可执行文件，无节区（加壳的文件通常表现位无节区）
 
@@ -43,19 +44,19 @@ audittd0: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically l
 
 使用 IDA 打开只看到有几个去掉符号表的函数
 
-![alt text](images/Linux后门分析/image-1.png)
+![alt text](<../../../.gitbook/assets/image-1 (5).png>)
 
 start 函数已进入就开始 jump，也符合加壳的特性
 
-![alt text](images/Linux后门分析/image-3.png)
+![alt text](<../../../.gitbook/assets/image-3 (4).png>)
 
 查看字符串，有 upx 关键字符串，可以猜测加了 upx 压缩壳
 
-![alt text](images/Linux后门分析/image-2.png)
+![alt text](<../../../.gitbook/assets/image-2 (6).png>)
 
 使用 detect it easy 工具查看是加了 upx 壳
 
-![alt text](images/Linux后门分析/image-4.png)
+![alt text](<../../../.gitbook/assets/image-4 (3).png>)
 
 使用 upx 脱壳获取程序
 
@@ -74,9 +75,9 @@ Unpacked 1 file.
 
 ```
 
-## 静态分析  
+### 静态分析
 
-## main 函数
+### main 函数
 
 创建 RAW 套接字，读取 DNS 报文
 
@@ -197,11 +198,11 @@ void __fastcall main_main()
 }
 ```
 
-![alt text](images/Linux后门分析/image-6.png)
+![alt text](<../../../.gitbook/assets/image-6 (1).png>)
 
-![alt text](images/Linux后门分析/image-7.png)
+![alt text](../../../.gitbook/assets/image-7.png)
 
-## main_handleDnsInfo
+### main\_handleDnsInfo
 
 ```c
 while ( (unsigned __int64)&v57 <= *(_QWORD *)(v9 + 16) )
@@ -323,16 +324,13 @@ LABEL_7:
 }
 ```
 
-## 动态分析
-
-
-
+### 动态分析
 
 每个 RR 16 个字节
 
-![alt text](images/Linux后门分析/image-5.png)
+![alt text](<../../../.gitbook/assets/image-5 (3).png>)
 
-## 脚本构造
+### 脚本构造
 
 ```py
 import sys
@@ -436,5 +434,3 @@ if __name__ == "__main__":
 
 
 ```
-
-
